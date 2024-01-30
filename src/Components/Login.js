@@ -105,7 +105,9 @@ export default function Login() {
 
     user.authenticateUser(authDetails, {
       onSuccess: (session) => {
+        console.log(session);
         const accessToken = session.getAccessToken().getJwtToken();
+        // console.log(accessToken);
         // Save the token securely (e.g., in local storage, secure cookie, etc.)
         localStorage.setItem("accessToken", accessToken);
 
