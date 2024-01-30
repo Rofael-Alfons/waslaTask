@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://rahulfaujdar.github.io/react-crud-application",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
