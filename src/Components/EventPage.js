@@ -2,13 +2,40 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Profile from "./Profile";
 import { getUser } from "../user";
+import axios from "axios";
+import { verifier } from "../UserPool";
 
 export default function EventPage() {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const idToken = localStorage.getItem("idToken");
+  const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    get();
+    verifier
+      .verify(accessToken)
+      .then((res) => {})
+      .catch((err) => {
+        navigate("/");
+        console.log(err);
+      });
+    axios
+      .get(
+        "https://3ctxbvozlb.execute-api.eu-north-1.amazonaws.com/dev/api/listEvents",
+        {
+          headers: {
+            Authorization: idToken,
+          },
+        }
+      )
+      .then((data) => {
+        setEvents(data.data.body);
+        console.log(data.data.body);
+      })
+      .catch((data) => {
+        console.log(data);
+      });
+    // get();
   }, []);
 
   const user = getUser();
@@ -29,14 +56,14 @@ export default function EventPage() {
   return (
     <div>
       <Profile
-        children={
-          <button
-            style={{ width: "80px" }}
-            onClick={() => navigate("/events/new")}
-          >
-            Add Event
-          </button>
-        }
+      // children={
+      //   <button
+      //     style={{ width: "80px" }}
+      //     onClick={() => navigate("/events/new")}
+      //   >
+      //     Add Event
+      //   </button>
+      // }
       />
       <div className="eventPage">
         <table className="table">
@@ -57,19 +84,19 @@ export default function EventPage() {
             {events?.map((item, i) => (
               <tr key={i}>
                 <td>{i + 1}</td>
-                <td>{item.name}</td>
-                <td>{item.description}</td>
+                <td>{item.eventName}</td>
+                <td>{item.eventDescription}</td>
                 {/* <td>{item.date}</td>
                 <td>{item.price}</td>
                 <td>{item.type}</td> */}
-                <td>
+                {/* <td>
                   <button onClick={() => navigate(`/events/${item.id}`)}>
                     Edit
                   </button>
                 </td>
                 <td>
                   <button onClick={() => deleteEvent(item.id)}>Delete</button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>

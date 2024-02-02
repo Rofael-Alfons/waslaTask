@@ -8,7 +8,7 @@ import { CognitoJwtVerifier } from "aws-jwt-verify";
 export default function Login() {
   const navigate = useNavigate();
   const [params, setParams] = useState({});
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState("");
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -19,11 +19,12 @@ export default function Login() {
       };
     });
 
-    setError(name, "");
-    setError("not_registered", "");
-    if (name === "password") {
-      setError("incorrect_password", "");
-    }
+    // setError(name, "");
+
+    // if (name === "email") {
+    //   setError("registered", "");
+    //   setError("invalid_email", "");
+    // }
   };
 
   const user = getUser();
@@ -106,15 +107,23 @@ export default function Login() {
     user.authenticateUser(authDetails, {
       onSuccess: (session) => {
         console.log(session);
+        const idToken = session.getIdToken().getJwtToken();
         const accessToken = session.getAccessToken().getJwtToken();
+        // const accessToken = session.getAccessToken().getJwtToken();
+        const email = session.getIdToken().decodePayload().email;
+        // console.log(session.getIdToken().decodePayload().email);
+
         // console.log(accessToken);
         // Save the token securely (e.g., in local storage, secure cookie, etc.)
+        localStorage.setItem("email", email);
+        localStorage.setItem("idToken", idToken);
         localStorage.setItem("accessToken", accessToken);
 
         // Verify the JWT
         verifier
           .verify(accessToken)
           .then((res) => {
+            navigate("/events");
             console.log(res);
           })
           .catch((err) => {
@@ -122,10 +131,10 @@ export default function Login() {
           });
 
         // Redirect or perform other actions as needed
-        navigate("/events");
       },
       onFailure: (data) => {
         console.error(data);
+        setErrors(data.message);
       },
       newPasswordRequired: (data) => {
         console.log(data);
@@ -151,7 +160,7 @@ export default function Login() {
             value={params.email || ""}
             onChange={handleChange}
           />
-          {!!errors.email && <span className="mandatory">{errors.email}</span>}
+          {/* {!!errors.email && <span className="mandatory">{errors.email}</span>} */}
         </div>
         <div className="space"></div>
         <div>
@@ -162,12 +171,10 @@ export default function Login() {
             value={params.password || ""}
             onChange={handleChange}
           />
-          {!!errors.password && (
+          {/* {!!errors.password && (
             <span className="mandatory">{errors.password}</span>
-          )}
-          {!!errors.incorrect_password && (
-            <span className="mandatory">{errors.incorrect_password}</span>
-          )}
+          )} */}
+          {errors && <div className="mandatory">{errors}</div>}
         </div>
         <div className="space"></div>
         <div>

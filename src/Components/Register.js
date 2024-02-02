@@ -6,7 +6,7 @@ import UserPool from "../UserPool";
 export default function Register() {
   const navigate = useNavigate();
   const [params, setParams] = useState({});
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState("");
 
   const user = getUser();
 
@@ -26,22 +26,22 @@ export default function Register() {
       };
     });
 
-    setError(name, "");
+    // setError(name, "");
 
-    if (name === "email") {
-      setError("registered", "");
-      setError("invalid_email", "");
-    }
+    // if (name === "email") {
+    //   setError("registered", "");
+    //   setError("invalid_email", "");
+    // }
   };
 
-  const setError = (name, value) => {
-    setErrors((prev) => {
-      return {
-        ...prev,
-        [name]: value,
-      };
-    });
-  };
+  // const setError = (name, value) => {
+  //   setErrors((prev) => {
+  //     return {
+  //       ...prev,
+  //       [name]: value,
+  //     };
+  //   });
+  // };
 
   // const register = () => {
 
@@ -72,8 +72,9 @@ export default function Register() {
     // e.preventDefault();
     UserPool.signUp(params.email, params.password, [], null, (err, data) => {
       if (err) {
-        console.log(err);
+        setErrors(err.message);
       }
+      navigate("/");
       console.log(data);
     });
   };
@@ -125,13 +126,11 @@ export default function Register() {
             value={params.email || ""}
             onChange={handleChange}
           />
-          {!!errors.email && <span className="mandatory">{errors.email}</span>}
+          {/* {!!errors.email && <span className="mandatory">{errors}</span>}
           {!!errors.invalid_email && (
-            <span className="mandatory">{errors.invalid_email}</span>
+            <span className="mandatory">{errors}</span>
           )}
-          {!!errors.registered && (
-            <span className="mandatory">{errors.registered}</span>
-          )}
+          {!!errors.registered && <span className="mandatory">{errors}</span>} */}
         </div>
         <div className="space"></div>
         <div>
@@ -144,9 +143,7 @@ export default function Register() {
             value={params.password || ""}
             onChange={handleChange}
           />
-          {!!errors.password && (
-            <span className="mandatory">{errors.password}</span>
-          )}
+          {errors && <div className="mandatory">{errors}</div>}
         </div>
         <div className="space"></div>
         <div>

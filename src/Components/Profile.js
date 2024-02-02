@@ -2,15 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../user";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
+import axios from "axios";
 
 const LOCAL_STORAGE_KEY_ACCESS_TOKEN = "accessToken";
 
 export default function Profile({ children }) {
   const navigate = useNavigate();
+  const email = localStorage.getItem("email");
   const user = getUser();
-  const [profileName, setProfileName] = useState("");
+  const [profileName, setProfileName] = useState(email);
+  const idToken = localStorage.getItem("idToken");
 
   useEffect(() => {
+    console.log(idToken);
+
     // Fetch and display profile name from the AWS Cognito token
     const fetchProfileName = async () => {
       if (user && user.signInUserSession) {
@@ -35,16 +40,8 @@ export default function Profile({ children }) {
     fetchProfileName();
   }, [user]);
   const logOut = () => {
-    if (user) {
-      // Clear user session and related information
-      user.signOut();
-
-      // Clear stored access token
-      localStorage.removeItem(LOCAL_STORAGE_KEY_ACCESS_TOKEN);
-
-      // Redirect to the login page or another appropriate location
-      navigate("/");
-    }
+    localStorage.removeItem("idToken");
+    navigate("/");
   };
   return (
     <div
@@ -52,9 +49,7 @@ export default function Profile({ children }) {
     >
       <div style={{ textAlign: "center" }}>
         <p>Profile</p>
-        <p style={{ fontSize: "20px" }}>
-          {profileName || "Default Profile Name"}
-        </p>
+        <p style={{ fontSize: "20px" }}>{email || "Default Profile Name"}</p>
         <div style={{ marginTop: "10px" }}>
           {children}
           <span>&nbsp;</span>
