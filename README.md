@@ -32,7 +32,11 @@ The objective of this task is to create a serverless application that includes a
 
 - **User Pool Name:** `testPool`
 - **Authentication Flow:**
-  - I used amazon-cognito-identity-js and aws-jwt-verify packages
+  - Used amazon-cognito-identity-js and aws-jwt-verify packages
+
+### Deployment
+
+The application is hosted on AWS Amplify. You can access the site through the following link: [AWS Amplify Site](https://main.d2jqcab4nlgeck.amplifyapp.com/).
 
 ## Contact
 
