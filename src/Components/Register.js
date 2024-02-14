@@ -73,9 +73,10 @@ export default function Register() {
     UserPool.signUp(params.email, params.password, [], null, (err, data) => {
       if (err) {
         setErrors(err.message);
+      } else {
+        navigate("/");
       }
-      navigate("/");
-      console.log(data);
+      // console.log(data);
     });
   };
 
